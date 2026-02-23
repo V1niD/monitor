@@ -17,14 +17,13 @@ try {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>NOC - Monitoramento Inteligente</title>
+    <title>NOC - Monitoramento</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #121212; color: white; padding: 20px; }
         h1 { text-align: center; color: #007bff; }
         #dashboard-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: flex-start; }
         
-        /* Card um pouco mais largo para caber as 4 métricas */
         .card-servidor {
             background: #1e1e1e; border: 2px solid #333; border-radius: 10px;
             width: 250px; padding: 15px; 
@@ -38,7 +37,6 @@ try {
         .metric { font-size: 1.05em; display: flex; justify-content: space-between; }
         .time-val { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px;}
         
-        /* Alerta Crítico */
         .critico { 
             border-color: #ff4d4d !important; 
             background: #311 !important; 
@@ -53,7 +51,6 @@ try {
             transition: all 0.3s ease;
         }
 
-        /* Card Expandido mais largo para os 4 itens ficarem bonitos */
         .card-servidor.expandido { width: 480px; }
         .card-servidor.expandido .metricas-grid { flex-direction: row; flex-wrap: wrap; justify-content: space-around; gap: 15px; }
         .card-servidor.expandido .metric { flex-direction: column; align-items: center; }
@@ -99,7 +96,6 @@ try {
                             card.id = `card-${servidor}`;
                             card.className = 'card-servidor';
                             
-                            // Apenas o clique do usuário controla o abrir/fechar
                             card.onclick = function() {
                                 if (cardsExpandidos.has(servidor)) {
                                     cardsExpandidos.delete(servidor);
@@ -110,7 +106,6 @@ try {
                                 }
                             };
 
-                            // HTML atualizado com 4 métricas
                             card.innerHTML = `
                                 <h3>${servidor}</h3>
                                 <div class="metricas-grid">
@@ -127,7 +122,6 @@ try {
                             container.appendChild(card);
                         }
 
-                        // LÓGICA DE ALERTA: Apenas muda a cor, não força a abertura!
                         const isCritico = (dadosAtuais.cpu > 90 || dadosAtuais.disco > 90);
 
                         if (isCritico) {
@@ -136,21 +130,18 @@ try {
                             card.classList.remove('critico');
                         }
 
-                        // Aplica o estado de expandido apenas se o usuário tiver clicado
                         if (cardsExpandidos.has(servidor)) {
                             card.classList.add('expandido');
                         } else {
                             card.classList.remove('expandido');
                         }
 
-                        // Atualiza os valores em tempo real
                         card.querySelector('.val-cpu').innerText = parseFloat(dadosAtuais.cpu).toFixed(2) + '%';
                         card.querySelector('.val-ram').innerText = parseFloat(dadosAtuais.ram).toFixed(2) + '%';
                         card.querySelector('.val-io').innerText = parseFloat(dadosAtuais.disco).toFixed(3) + ' MB/s';
                         card.querySelector('.val-arm').innerText = parseFloat(dadosAtuais.armazenamento).toFixed(1) + '%';
                         card.querySelector('.val-time').innerText = "Atualizado: " + dadosAtuais.data_hora;
 
-                        // Atualiza o Gráfico Duplo
                         const ctx = document.getElementById(`canvas-${servidor}`).getContext('2d');
                         if (!graficosAtivos[servidor]) {
                             graficosAtivos[servidor] = new Chart(ctx, {
