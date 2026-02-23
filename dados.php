@@ -1,5 +1,4 @@
 <?php
-// Pega os dados do banco e retorna para o dashboard
 date_default_timezone_set('America/Sao_Paulo');
 header('Content-Type: application/json');
 
